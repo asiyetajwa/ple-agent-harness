@@ -120,7 +120,8 @@ jobs:
           tail -c 200000 "$RUNNER_TEMP/eval.log" > "$D/eval.log" 2>/dev/null || true
           tail -c 50000 "$RUNNER_TEMP/proxy.log" | grep -viE "key|token|authorization" > "$D/proxy.log" 2>/dev/null || true
           # harness-side run logs (ledger, sign-off, repair rounds) and final messages, small enough to keep
-          find "$OUT" -name 'final_message.md' -size -1M -o -name 'harness-*.json' -size -4M 2>/dev/null | while read -r f; do rel="${f#$OUT/}"; mkdir -p "$D/$(dirname "$rel")"; cp "$f" "$D/$rel"; done || true
+          # per trial: the harness's own log (agent/), only the reward summary from verifier/ (no grader files, which may hold expected answers), small files only
+          find "$OUT"/attempt*/jobs -type f -size -3M \( -path '*/agent/*' -o -path '*/verifier/reward*' \) \( -name '*.log' -o -name '*.txt' -o -name '*.json' -o -name '*.md' \) ! -name 'trajectory.json' 2>/dev/null | while read -r f; do rel="${f#$OUT/}"; mkdir -p "$D/$(dirname "$rel")"; cp "$f" "$D/$rel"; done || true
           if [ "${{ inputs.export }}" = "true" ] && [ -d "$ENTRY/artifacts" ]; then rm -rf artifacts && cp -r "$ENTRY/artifacts" artifacts; fi
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add results; if [ -d artifacts ]; then git add artifacts; fi; git commit -qm "Dev run ${{ inputs.label }}: ${{ inputs.entry }} on ${{ inputs.tasks }}" || exit 0
