@@ -117,12 +117,23 @@ solution code and its own checks) and recomputes the quantity from the governing
 Compare with units and tolerances.
 - For a "review" requirement, find the exact place in the deliverable that meets it and compare it with the source \
 document. A claim that it is met is not evidence; the deliverable and the source are.
+- Derive each value from the governing inputs yourself. Do not take the deliverable's own intermediate values, \
+cached spreadsheet results or summary text as the reference: a deliverable that agrees with itself proves nothing.
+- If a deliverable is code, copy the inputs it reads into a fresh directory under /tmp/.harness/check/ and run it \
+there from scratch, as a grader would, then test what it produces.
+- Check each requirement with its own command and read its output before you judge it. Never write verdicts from a \
+script that decides pass or fail for many requirements at once.
 - A missing deliverable, an unreadable file, a wrong path or format, or a value from a superseded document is a fail.
 - Be strict on hard requirements and fair on scored ones. Do not invent requirements that are not in the list.
 
-Write your result with bash to {signoff} as JSON: a list of {{"id": "R1", "verdict": "pass|fail", "evidence": \
-"what you ran or read and what it showed, with numbers", "fix": "for a fail: exactly what must change"}} with one \
-entry per requirement you were given. Then answer with one line: how many passed and failed."""
+Write your result with bash to {signoff} as JSON: a list of {{"id": "R1", "verdict": "pass|fail", "observed": \
+"an exact excerpt, copied character for character, from the output of a command you ran or a file you read that \
+shows the deciding value or text", "evidence": "what you ran or read and what it showed, with numbers", "fix": "for a \
+fail: exactly what must change"}} with one entry per requirement you were given. The harness checks every pass in \
+code: its "observed" excerpt must appear in the output of a command you ran (not in a command you typed, and not in \
+the command that writes this file), and for an "exec" requirement it must contain the number you checked. A pass \
+without such an excerpt is recorded as unverified, not as a pass. Then answer with one line: how many passed and \
+failed."""
 
 CHECKER_PROMPT = """The task the deliverables answer:
 {instruction}
@@ -136,6 +147,11 @@ The deliverables and where the engineer says each requirement is met (pointers o
 
 Current documents: {current}
 Superseded documents (must not be used): {superseded}"""
+
+EVIDENCE_RETRY = """Only the requirements below are still open. Your earlier check marked them pass but did not show \
+the evidence (the harness note says why). Check each one again with its own command now, and quote the deciding \
+output exactly in "observed". If you cannot show it, the verdict is fail.
+{items}"""
 
 REPAIR_PROMPT = """{instruction}
 
@@ -151,14 +167,66 @@ code where numbers are involved. Then update {claims} for the items you fixed, a
 what you changed."""
 
 
+VERDICT_WORDS = re.compile(r"\b(pass(ed)?|fail(ed)?|ok|verified|true|false|yes|no)\b", re.I)
+
+
+def squash(text: str) -> str:
+  return " ".join(text.split())
+
+
+def bind_evidence(rows: dict[str, dict[str, Any]], items: list[dict[str, Any]],
+                  capture: list[tuple[str, str]]) -> None:
+  """Downgrades every pass whose quoted excerpt is not in what the checker actually ran or read.
+
+  Evidence counts only from outputs of commands (and file reads) that do not mention the sign-off file, and an
+  excerpt that also appears in any command the checker typed is an echo of its own text, not a measurement.
+  """
+  outputs = squash("\n".join(out for cmd, out in capture if "signoff" not in cmd))
+  typed = squash("\n".join(cmd for cmd, _ in capture if not cmd.startswith("read_file ")))
+  kind = {r["id"]: r.get("check") for r in items}
+  for rid, row in rows.items():
+    if row.get("verdict") != "pass":
+      continue
+    seen = squash(str(row.get("observed") or ""))
+    why = None
+    if len(seen) < 6:
+      why = "no excerpt quoted"
+    elif not VERDICT_WORDS.sub("", seen).strip(" :.-=|"):
+      why = "the excerpt is only a verdict word"
+    elif seen not in outputs:
+      why = "the excerpt is not in the output of any command run or file read"
+    elif seen in typed:
+      why = "the excerpt appears in a command the checker typed, so it is an echo, not a measurement"
+    elif kind.get(rid) == "exec" and not re.search(r"\d", seen):
+      why = "an exec requirement needs the checked number in the excerpt"
+    if why:
+      row["verdict"] = "unverified"
+      row["fix"] = f"The check did not show its evidence ({why}). Verify it again and quote the output."
+      row["evidence"] = f"{row.get('evidence', '')} [harness: {why}]"[:2000]
+
+
 class Boxed:
   """A session whose time ends at `until` (monotonic seconds) or at the task's end, whichever is first."""
 
-  def __init__(self, session: taskbridge.Session, until: float, keep_final: bool):
+  def __init__(self, session: taskbridge.Session, until: float, keep_final: bool,
+               capture: list[tuple[str, str]] | None = None):
     object.__setattr__(self, "_s", session)
     object.__setattr__(self, "_until", until)
     object.__setattr__(self, "_keep", keep_final)
     object.__setattr__(self, "_final", "")
+    object.__setattr__(self, "_capture", capture)
+
+  async def exec(self, command: str, timeout_sec: int = 120) -> dict[str, Any]:
+    result = await self._s.exec(command, timeout_sec)
+    if self._capture is not None:
+      self._capture.append((command, str(result.get("output") or "")))
+    return result
+
+  async def read_file(self, path: str) -> bytes:
+    data = await self._s.read_file(path)
+    if self._capture is not None:
+      self._capture.append((f"read_file {path}", data[:2_000_000].decode("utf-8", "replace")))
+    return data
 
   def __getattr__(self, name: str) -> Any:
     if name == "final_message":
@@ -208,8 +276,9 @@ class Run:
     self.record["phases"].append(entry)
     await self.s.log("harness " + json.dumps(entry)[:4000])
 
-  async def agent(self, label: str, until: float, keep_final: bool = False, **kw: Any) -> tuple[engine.Agent, str]:
-    a = engine.Agent(Boxed(self.s, until, keep_final), label=label, shared=self.shared, **kw)
+  async def agent(self, label: str, until: float, keep_final: bool = False,
+                  capture: list[tuple[str, str]] | None = None, **kw: Any) -> tuple[engine.Agent, str]:
+    a = engine.Agent(Boxed(self.s, until, keep_final, capture), label=label, shared=self.shared, **kw)
     text = await a.run()
     if self.shared is None:
       self.shared = a
@@ -258,17 +327,32 @@ class Run:
         claims=claims_text,
         current=json.dumps(docs.get("current") or [])[:4000],
         superseded=json.dumps(docs.get("superseded") or [])[:4000])
-    await self.s.exec(f"rm -f {SIGNOFF}", timeout_sec=30)
-    until = min(self.end() - 60, time.monotonic() + self.total * CHECK_SHARE)
-    await self.agent(label, until, system=CHECKER_SYSTEM.replace("{signoff}", SIGNOFF), prompt=prompt,
-                     effort=CHECKER_EFFORT, allow={"bash", "read_file"})
-    out = await self.read_json(SIGNOFF)
     results: dict[str, dict[str, Any]] = {}
-    for row in out if isinstance(out, list) else []:
-      if isinstance(row, dict) and row.get("id") in wanted:
-        results[row["id"]] = row
-    for r in items:  # an item the checker never reached is not signed off
-      results.setdefault(r["id"], {"id": r["id"], "verdict": "unchecked", "evidence": "", "fix": ""})
+    todo, attempt = items, 0
+    while todo:
+      capture: list[tuple[str, str]] = []
+      await self.s.exec(f"rm -f {SIGNOFF}", timeout_sec=30)
+      until = min(self.end() - 60, time.monotonic() + self.total * CHECK_SHARE * (1.0 if attempt == 0 else 0.5))
+      await self.agent(label if attempt == 0 else f"{label}-evidence", until,
+                       system=CHECKER_SYSTEM.replace("{signoff}", SIGNOFF), capture=capture,
+                       prompt=prompt if attempt == 0 else prompt + "\n\n" + EVIDENCE_RETRY.format(
+                           items="\n".join(f"- {r['id']}: {results[r['id']].get('evidence', '')[-300:]}" for r in todo)),
+                       effort=CHECKER_EFFORT, allow={"bash", "read_file"})
+      out = await self.read_json(SIGNOFF)
+      ids = {r["id"] for r in todo}
+      rows = {row["id"]: row for row in (out if isinstance(out, list) else [])
+              if isinstance(row, dict) and row.get("id") in ids}
+      bind_evidence(rows, todo, capture)
+      results.update(rows)
+      for r in todo:  # an item the checker never reached is not signed off
+        results.setdefault(r["id"], {"id": r["id"], "verdict": "unchecked", "evidence": "", "fix": ""})
+      unverified = [r for r in todo if results[r["id"]].get("verdict") == "unverified"]
+      await self.note("evidence", label=label, attempt=attempt, checked=len(rows), unverified=len(unverified),
+                      excerpts=len(capture))
+      attempt += 1
+      if attempt > 1 or not unverified or self.left() < self.total * CHECK_SHARE:
+        break
+      todo = unverified
     return results
 
   async def repair(self, ledger: dict[str, Any], failed: list[dict[str, Any]], n: int) -> None:
