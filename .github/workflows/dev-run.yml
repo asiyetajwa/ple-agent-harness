@@ -83,7 +83,8 @@ jobs:
           cp -r "${{ inputs.entry }}"/. "$E"/
           rm -rf "$E/.git" "$E/.github" "$E/results" "$E/baselines" 2>/dev/null || true
           if [ "${{ inputs.entry }}" != "." ]; then rm -rf "$E/artifacts"; fi
-          if [ -n "${{ inputs.model }}" ]; then sed -i "s#^model_api: .*#model_api: google-cloud/${{ inputs.model }}#" "$E/submission.yaml"; fi
+          M="${{ inputs.model }}"; M="${M#google-cloud/}"
+          if [ -n "$M" ]; then sed -i "s#^model_api: .*#model_api: google-cloud/$M#" "$E/submission.yaml"; fi
           git -C "$E" init -q && git -C "$E" add -A && git -C "$E" -c user.name=run -c user.email=run@localhost commit -qm entry
           grep -E '^(name|model_api):' "$E/submission.yaml"
           echo "ENTRY=$E" >> "$GITHUB_ENV"
