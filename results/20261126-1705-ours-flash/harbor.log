@@ -1,0 +1,25 @@
+  2/2 Mean: 0.125 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1:37:20 0:00:00
+adhoc • plebench-serve • gemini-3.8-flash
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      2 │          0 │ 0.125 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ Reward              ┃ Count ┃
+┡━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ 0.14126984126984127 │     1 │
+│ 0.10869565217391304 │     1 │
+└─────────────────────┴───────┘
+
+Job Info
+Total runtime: 1h 37m 21s
+Results written to 
+/home/main/actions-runner/_work/_temp/out-45840678203/attempt1/jobs/dev/result.j
+son
+Inspect results by running `harbor view 
+/home/main/actions-runner/_work/_temp/out-45840678203/attempt1/jobs`
+Share results by running `harbor upload 
+/home/main/actions-runner/_work/_temp/out-45840678203/attempt1/jobs/dev`
+
