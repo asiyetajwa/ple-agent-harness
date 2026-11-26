@@ -55,7 +55,10 @@ jobs:
           uv tool install -q harbor==0.20.0 --with websockets || uv tool upgrade harbor
           # Harbor builds task images with BuildKit, which needs the buildx plugin.
           if ! docker buildx version >/dev/null 2>&1; then
-            sudo apt-get update -qq && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq docker-buildx-plugin
+            # Ubuntu's docker.io has no docker-buildx-plugin package; install the official release binary per user.
+            mkdir -p "$HOME/.docker/cli-plugins"
+            curl -fsSL -o "$HOME/.docker/cli-plugins/docker-buildx" https://github.com/docker/buildx/releases/download/v0.19.3/buildx-v0.19.3.linux-amd64
+            chmod +x "$HOME/.docker/cli-plugins/docker-buildx"
           fi
           docker buildx version
           docker info --format 'docker {{.ServerVersion}}, {{.NCPU}} CPUs, {{.MemTotal}} bytes'
@@ -104,14 +107,15 @@ jobs:
           D="results/$(date -u +%Y%m%d-%H%M)-${{ inputs.label }}"; mkdir -p "$D"
           cp "$OUT/results.json" "$D/" 2>/dev/null || echo "no results.json" > "$D/MISSING.txt"
           # Harbor's own log from the last attempt, for evaluator errors
-          last=$(ls -d "$OUT"/attempt* 2>/dev/null | sort -V | tail -1); [ -n "$last" ] && tail -c 100000 "$last/harbor.log" > "$D/harbor.log" 2>/dev/null
+          last=$(ls -d "$OUT"/attempt* 2>/dev/null | sort -V | tail -1 || true)
+          if [ -n "$last" ]; then tail -c 100000 "$last/harbor.log" > "$D/harbor.log" 2>/dev/null || true; fi
           tail -c 200000 "$RUNNER_TEMP/eval.log" > "$D/eval.log" 2>/dev/null || true
           tail -c 50000 "$RUNNER_TEMP/proxy.log" | grep -viE "key|token|authorization" > "$D/proxy.log" 2>/dev/null || true
           # harness-side run logs (ledger, sign-off, repair rounds) and final messages, small enough to keep
-          find "$OUT" -name 'final_message.md' -size -1M -o -name 'harness-*.json' -size -4M 2>/dev/null | while read -r f; do rel="${f#$OUT/}"; mkdir -p "$D/$(dirname "$rel")"; cp "$f" "$D/$rel"; done
+          find "$OUT" -name 'final_message.md' -size -1M -o -name 'harness-*.json' -size -4M 2>/dev/null | while read -r f; do rel="${f#$OUT/}"; mkdir -p "$D/$(dirname "$rel")"; cp "$f" "$D/$rel"; done || true
           if [ "${{ inputs.export }}" = "true" ] && [ -d "$ENTRY/artifacts" ]; then rm -rf artifacts && cp -r "$ENTRY/artifacts" artifacts; fi
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add results artifacts 2>/dev/null; git commit -qm "Dev run ${{ inputs.label }}: ${{ inputs.entry }} on ${{ inputs.tasks }}" || exit 0
+          git add results; if [ -d artifacts ]; then git add artifacts; fi; git commit -qm "Dev run ${{ inputs.label }}: ${{ inputs.entry }} on ${{ inputs.tasks }}" || exit 0
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
       - name: Stop the model proxy
         if: always()
