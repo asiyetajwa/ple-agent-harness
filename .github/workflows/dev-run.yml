@@ -53,6 +53,11 @@ jobs:
           rm -rf "$RUNNER_TEMP/ple" && git clone -q https://github.com/google-research/ple "$RUNNER_TEMP/ple"
           git -C "$RUNNER_TEMP/ple" checkout -q "$KIT_REV"
           uv tool install -q harbor==0.20.0 --with websockets || uv tool upgrade harbor
+          # Harbor builds task images with BuildKit, which needs the buildx plugin.
+          if ! docker buildx version >/dev/null 2>&1; then
+            sudo apt-get update -qq && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq docker-buildx-plugin
+          fi
+          docker buildx version
           docker info --format 'docker {{.ServerVersion}}, {{.NCPU}} CPUs, {{.MemTotal}} bytes'
       - name: Start the model proxy
         env:
@@ -63,7 +68,8 @@ jobs:
           key=$(openssl rand -hex 24); echo "::add-mask::$key"
           echo "MODEL_PROXY_KEY=$key" >> "$GITHUB_ENV"
           echo "MODEL_PROXY_URL=http://localhost:4000" >> "$GITHUB_ENV"
-          MODEL_PROXY_KEY=$key nohup "$RUNNER_TEMP/ple/kit/model_proxy/start.sh" > "$RUNNER_TEMP/proxy.log" 2>&1 &
+          # its own session and process group, so stopping it can never touch the runner
+          MODEL_PROXY_KEY=$key setsid nohup "$RUNNER_TEMP/ple/kit/model_proxy/start.sh" > "$RUNNER_TEMP/proxy.log" 2>&1 < /dev/null &
           echo $! > "$RUNNER_TEMP/proxy.pid"
           for i in $(seq 1 90); do curl -sf -o /dev/null -H "Authorization: Bearer $key" http://localhost:4000/v1/models && break; sleep 2; done
           curl -s -H "Authorization: Bearer $key" http://localhost:4000/v1/models | python3 -c "import json,sys; print([m['id'] for m in json.load(sys.stdin)['data']])"
@@ -86,16 +92,19 @@ jobs:
           export PATH="$HOME/.local/bin:$PATH"
           cd "$RUNNER_TEMP/ple"
           OUT="$RUNNER_TEMP/out-${{ github.run_id }}"; rm -rf "$OUT"
+          echo "OUT=$OUT" >> "$GITHUB_ENV"
           T=""; [ "${{ inputs.tasks }}" != "all" ] && T="--tasks ${{ inputs.tasks }}"
           X="--no-export"; [ "${{ inputs.export }}" = "true" ] && X=""
           uv run python eval/run.py "$ENTRY" $T --trials "${{ inputs.trials }}" --out "$OUT" $X 2>&1 | tee "$RUNNER_TEMP/eval.log"
-          echo "OUT=$OUT" >> "$GITHUB_ENV"
       - name: Commit the results
         if: always()
         run: |
-          set -uo pipefail
+          set -o pipefail
+          OUT="${OUT:-$RUNNER_TEMP/none}"
           D="results/$(date -u +%Y%m%d-%H%M)-${{ inputs.label }}"; mkdir -p "$D"
           cp "$OUT/results.json" "$D/" 2>/dev/null || echo "no results.json" > "$D/MISSING.txt"
+          # Harbor's own log from the last attempt, for evaluator errors
+          last=$(ls -d "$OUT"/attempt* 2>/dev/null | sort -V | tail -1); [ -n "$last" ] && tail -c 100000 "$last/harbor.log" > "$D/harbor.log" 2>/dev/null
           tail -c 200000 "$RUNNER_TEMP/eval.log" > "$D/eval.log" 2>/dev/null || true
           tail -c 50000 "$RUNNER_TEMP/proxy.log" | grep -viE "key|token|authorization" > "$D/proxy.log" 2>/dev/null || true
           # harness-side run logs (ledger, sign-off, repair rounds) and final messages, small enough to keep
@@ -107,4 +116,6 @@ jobs:
       - name: Stop the model proxy
         if: always()
         run: |
-          p=$(cat "$RUNNER_TEMP/proxy.pid" 2>/dev/null) && kill -- "-$(ps -o pgid= "$p" | tr -d " ")" 2>/dev/null; kill "$p" 2>/dev/null; true
+          # the proxy was started with setsid, so its process group is its own pid
+          p=$(cat "$RUNNER_TEMP/proxy.pid" 2>/dev/null) || exit 0
+          [ "$(ps -o pgid= -p "$p" | tr -d ' ')" = "$p" ] && kill -- "-$p" 2>/dev/null; true
