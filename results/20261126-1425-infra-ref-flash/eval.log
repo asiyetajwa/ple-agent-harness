@@ -1,0 +1,24 @@
+Using CPython 3.11.18
+Creating virtual environment at: .venv
+Installed 17 packages in 8ms
+rubric and checks-judge tasks are judged by claude-opus-5-5 at http://localhost:4000/v1 (JUDGE_* to change)
+building reference ...
+building engineers-estimate-check's image, which its verifier starts from (up to 60 min) ...
+attempt 1: 2 task(s), 1 at a time; Harbor writes /home/main/actions-runner/_work/_temp/out-45833261120/attempt1/harbor.log (tail -f it to follow)
+  the evaluator failed wind-diaphragm-shear (evaluator: RuntimeError), engineers-estimate-check (evaluator: RuntimeError); running again
+attempt 2: 2 task(s), 1 at a time; Harbor writes /home/main/actions-runner/_work/_temp/out-45833261120/attempt2/harbor.log (tail -f it to follow)
+  the evaluator failed wind-diaphragm-shear (evaluator: RuntimeError), engineers-estimate-check (evaluator: RuntimeError); running again
+attempt 3: 2 task(s), 1 at a time; Harbor writes /home/main/actions-runner/_work/_temp/out-45833261120/attempt3/harbor.log (tail -f it to follow)
+  the evaluator failed wind-diaphragm-shear (evaluator: RuntimeError), engineers-estimate-check (evaluator: RuntimeError); running again
+
+task                      score  status
+wind-diaphragm-shear      0.000  evaluator: RuntimeError
+engineers-estimate-check  0.000  evaluator: RuntimeError
+
+reference (google-cloud/gemini-3.8-flash): 0.000 over 2 task(s)
+warning: 2 task(s) have no measurement: wind-diaphragm-shear (evaluator: RuntimeError), engineers-estimate-check (evaluator: RuntimeError). They count 0 above, as on the leaderboard once its attempts are used up. What Harbor printed is in /home/main/actions-runner/_work/_temp/out-45833261120/attempt3/harbor.log.
+results: /home/main/actions-runner/_work/_temp/out-45833261120/results.json
+
+artifacts: none
+  wind-diaphragm-shear: not exported, it has no measured result in this run
+  engineers-estimate-check: not exported, it has no measured result in this run

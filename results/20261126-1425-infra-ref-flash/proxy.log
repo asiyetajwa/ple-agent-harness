@@ -1,0 +1,41 @@
+INFO:     Started server process [24448]
+INFO:     Waiting for application startup.
+
+   ██╗     ██╗████████╗███████╗██╗     ██╗     ███╗   ███╗
+   ██║     ██║╚══██╔══╝██╔════╝██║     ██║     ████╗ ████║
+   ██║     ██║   ██║   █████╗  ██║     ██║     ██╔████╔██║
+   ██║     ██║   ██║   ██╔══╝  ██║     ██║     ██║╚██╔╝██║
+   ███████╗██║   ██║   ███████╗███████╗███████╗██║ ╚═╝ ██║
+   ╚══════╝╚═╝   ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝
+
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:4000 (Press CTRL+C to quit)
+
+[1;37m#------------------------------------------------------------#[0m
+[1;37m#                                                            #[0m
+[1;37m#              'I don't like how this works...'               #[0m
+[1;37m#        https://github.com/BerriAI/litellm/issues/new        #[0m
+[1;37m#                                                            #[0m
+[1;37m#------------------------------------------------------------#[0m
+
+ Thank you for using LiteLLM! - Krrish & Ishaan
+
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+
+
+[32mLiteLLM: Proxy initialized with Config, Set models:[0m
+[32m    gemini-4-argon[0m
+[32m    gemini-4-carbon[0m
+[32m    gemini-4-neon[0m
+[32m    gemini-4-hydrogen[0m
+[32m    gemini-3.8-flash[0m
+[32m    gemini-3.1-pro-preview[0m
+[32m    claude-opus-5-5[0m
+[32m    gpt-oss-120b[0m
+[32m    glm-5.2[0m
+[32m    gemma-4-26b[0m
+[32m    llama-4-maverick[0m
+INFO:     127.0.0.1:58740 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58742 - "GET /v1/models HTTP/1.1" 200 OK

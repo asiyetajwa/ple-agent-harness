@@ -1,0 +1,36 @@
+Docker compose down failed: Docker compose command failed for environment wind-diaphragm-shear. Command: docker compose --project-name wind-diaphragm-shear__gwhhefa__env --project-directory /home/main/actions-runner/_work/_temp/out-45833261120/tasks/wind-diaphragm-shear/environment -f /tmp/tmpbf57w7og/wind-diaphragm-shear__gwhhEFa__env-docker-compose-resources.json -f /home/main/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/environments/docker/docker-compose-build.yaml -f /home/main/actions-runner/_work/_temp/out-45833261120/attempt3/task-limits.yaml -f /tmp/tmptczvm5xt/docker-compose-environment.json -f /tmp/tmpn5_1ls5t/docker-compose-mounts.json -f /home/main/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/environments/docker/docker-compose-egress-control.yaml -f /home/main/actions-runner/_work/_temp/ple/kit/compose/docker-compose-egress-gost.yaml -f /tmp/tmp5_ihx41q/docker-compose-egress-control-services.json down --rmi local --volumes --remove-orphans. Return code: 125. Stdout: unknown flag: --project-name
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+. Stderr: None. 
+Docker compose down failed: Docker compose command failed for environment engineers-estimate-check. Command: docker compose --project-name engineers-estimate-check__mtb3jeb__env --project-directory /home/main/actions-runner/_work/_temp/out-45833261120/tasks/engineers-estimate-check/environment -f /tmp/tmpblkmchzg/engineers-estimate-check__mtB3JEb__env-docker-compose-resources.json -f /home/main/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/environments/docker/docker-compose-build.yaml -f /home/main/actions-runner/_work/_temp/out-45833261120/attempt3/task-limits.yaml -f /tmp/tmpr1wxa16z/docker-compose-environment.json -f /tmp/tmpitk4geyq/docker-compose-mounts.json -f /home/main/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/environments/docker/docker-compose-egress-control.yaml -f /home/main/actions-runner/_work/_temp/ple/kit/compose/docker-compose-egress-gost.yaml -f /tmp/tmpdt25kk41/docker-compose-egress-control-services.json down --rmi local --volumes --remove-orphans. Return code: 125. Stdout: unknown flag: --project-name
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+. Stderr: None. 
+  2/2 Mean: 0.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:02 0:00:00
+adhoc • plebench-serve • gemini-3.8-flash
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      0 │          2 │ 0.000 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ Exception    ┃ Count ┃
+┡━━━━━━━━━━━━━━╇━━━━━━━┩
+│ RuntimeError │     2 │
+└──────────────┴───────┘
+
+Job Info
+Total runtime: 2s
+Results written to 
+/home/main/actions-runner/_work/_temp/out-45833261120/attempt3/jobs/dev/result.j
+son
+Inspect results by running `harbor view 
+/home/main/actions-runner/_work/_temp/out-45833261120/attempt3/jobs`
+Share results by running `harbor upload 
+/home/main/actions-runner/_work/_temp/out-45833261120/attempt3/jobs/dev`
+
