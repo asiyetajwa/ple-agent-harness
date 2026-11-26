@@ -1,0 +1,110 @@
+name: Dev run
+
+# Runs an entry on PLE dev tasks on ple-dev-01 (self-hosted, Docker, project dribble360 credits).
+# Models: the kit's LiteLLM proxy on Vertex AI, signed in keylessly through the GitHub OIDC provider.
+# Judge: the same proxy (claude-opus-5-5-judge, as the leaderboard). Results are committed under results/.
+on:
+  workflow_dispatch:
+    inputs:
+      entry:
+        description: "Entry folder: . (the harness) or baselines/reference"
+        default: "."
+      tasks:
+        description: "Comma-separated dev task ids, or 'all'"
+        default: "all"
+      model:
+        description: "Override model_api id (e.g. gemini-3.8-flash); empty keeps submission.yaml"
+        default: ""
+      trials:
+        description: "Tasks in parallel"
+        default: "1"
+      export:
+        description: "Export artifacts into the entry (true only for the submitted harness and model)"
+        default: "false"
+      label:
+        description: "Short name for this run in results/"
+        default: "run"
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: ple-dev-01
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: [self-hosted, ple-dev]
+    timeout-minutes: 4320
+    env:
+      KIT_REV: 5cf736f
+    steps:
+      - uses: actions/checkout@v5
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/828511809896/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: ple-harness-dev@dribble360.iam.gserviceaccount.com
+      - name: Kit and Harbor
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$PATH"
+          rm -rf "$RUNNER_TEMP/ple" && git clone -q https://github.com/google-research/ple "$RUNNER_TEMP/ple"
+          git -C "$RUNNER_TEMP/ple" checkout -q "$KIT_REV"
+          uv tool install -q harbor==0.20.0 --with websockets || uv tool upgrade harbor
+          docker info --format 'docker {{.ServerVersion}}, {{.NCPU}} CPUs, {{.MemTotal}} bytes'
+      - name: Start the model proxy
+        env:
+          VERTEXAI_PROJECT: ${{ secrets.VERTEXAI_PROJECT }}
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$PATH"
+          key=$(openssl rand -hex 24); echo "::add-mask::$key"
+          echo "MODEL_PROXY_KEY=$key" >> "$GITHUB_ENV"
+          echo "MODEL_PROXY_URL=http://localhost:4000" >> "$GITHUB_ENV"
+          MODEL_PROXY_KEY=$key nohup "$RUNNER_TEMP/ple/kit/model_proxy/start.sh" > "$RUNNER_TEMP/proxy.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/proxy.pid"
+          for i in $(seq 1 90); do curl -sf -o /dev/null -H "Authorization: Bearer $key" http://localhost:4000/v1/models && break; sleep 2; done
+          curl -s -H "Authorization: Bearer $key" http://localhost:4000/v1/models | python3 -c "import json,sys; print([m['id'] for m in json.load(sys.stdin)['data']])"
+      - name: Prepare the entry
+        run: |
+          set -euo pipefail
+          E="$RUNNER_TEMP/entry"; rm -rf "$E"; mkdir -p "$E"
+          cp -r "${{ inputs.entry }}"/. "$E"/
+          rm -rf "$E/.git" "$E/.github" "$E/results" "$E/baselines" 2>/dev/null || true
+          if [ "${{ inputs.entry }}" != "." ]; then rm -rf "$E/artifacts"; fi
+          if [ -n "${{ inputs.model }}" ]; then sed -i "s#^model_api: .*#model_api: google-cloud/${{ inputs.model }}#" "$E/submission.yaml"; fi
+          git -C "$E" init -q && git -C "$E" add -A && git -C "$E" -c user.name=run -c user.email=run@localhost commit -qm entry
+          grep -E '^(name|model_api):' "$E/submission.yaml"
+          echo "ENTRY=$E" >> "$GITHUB_ENV"
+      - name: Run the dev tasks
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -uo pipefail
+          export PATH="$HOME/.local/bin:$PATH"
+          cd "$RUNNER_TEMP/ple"
+          OUT="$RUNNER_TEMP/out-${{ github.run_id }}"; rm -rf "$OUT"
+          T=""; [ "${{ inputs.tasks }}" != "all" ] && T="--tasks ${{ inputs.tasks }}"
+          X="--no-export"; [ "${{ inputs.export }}" = "true" ] && X=""
+          uv run python eval/run.py "$ENTRY" $T --trials "${{ inputs.trials }}" --out "$OUT" $X 2>&1 | tee "$RUNNER_TEMP/eval.log"
+          echo "OUT=$OUT" >> "$GITHUB_ENV"
+      - name: Commit the results
+        if: always()
+        run: |
+          set -uo pipefail
+          D="results/$(date -u +%Y%m%d-%H%M)-${{ inputs.label }}"; mkdir -p "$D"
+          cp "$OUT/results.json" "$D/" 2>/dev/null || echo "no results.json" > "$D/MISSING.txt"
+          tail -c 200000 "$RUNNER_TEMP/eval.log" > "$D/eval.log" 2>/dev/null || true
+          tail -c 50000 "$RUNNER_TEMP/proxy.log" | grep -viE "key|token|authorization" > "$D/proxy.log" 2>/dev/null || true
+          # harness-side run logs (ledger, sign-off, repair rounds) and final messages, small enough to keep
+          find "$OUT" -name 'final_message.md' -size -1M -o -name 'harness-*.json' -size -4M 2>/dev/null | while read -r f; do rel="${f#$OUT/}"; mkdir -p "$D/$(dirname "$rel")"; cp "$f" "$D/$rel"; done
+          if [ "${{ inputs.export }}" = "true" ] && [ -d "$ENTRY/artifacts" ]; then rm -rf artifacts && cp -r "$ENTRY/artifacts" artifacts; fi
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results artifacts 2>/dev/null; git commit -qm "Dev run ${{ inputs.label }}: ${{ inputs.entry }} on ${{ inputs.tasks }}" || exit 0
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
+      - name: Stop the model proxy
+        if: always()
+        run: |
+          p=$(cat "$RUNNER_TEMP/proxy.pid" 2>/dev/null) && kill -- "-$(ps -o pgid= "$p" | tr -d " ")" 2>/dev/null; kill "$p" 2>/dev/null; true

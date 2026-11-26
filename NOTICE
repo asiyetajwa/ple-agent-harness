@@ -1,0 +1,6 @@
+This repository includes files derived from the PLE dev kit (google-research/ple), Copyright 2026 Google LLC,
+licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0):
+- taskbridge.py (the serve protocol implementation, unmodified)
+- engine.py (derived from sample_submissions/custom-openai/serve.py; modifications are marked in the file header)
+- baselines/reference/ (the custom-openai sample, unmodified except the model in submission.yaml), used as the baseline
+The rest of the repository is MIT licensed (LICENSE).
