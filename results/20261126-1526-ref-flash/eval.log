@@ -1,0 +1,16 @@
+Using CPython 3.11.18
+Creating virtual environment at: .venv
+Installed 17 packages in 10ms
+rubric and checks-judge tasks are judged by claude-opus-5-5 at http://localhost:4000/v1 (JUDGE_* to change)
+building reference ...
+attempt 1: 2 task(s), 1 at a time; Harbor writes /home/main/actions-runner/_work/_temp/out-45839269893/attempt1/harbor.log (tail -f it to follow)
+
+task                      score  status
+wind-diaphragm-shear      0.130  ok (1946 s)
+engineers-estimate-check  0.130  ok (1215 s)
+
+reference (google-cloud/gemini-3.8-flash): 0.130 over 2 task(s)
+results: /home/main/actions-runner/_work/_temp/out-45839269893/results.json
+
+artifacts: 2 task(s) in /home/main/actions-runner/_work/_temp/out-45839269893/artifacts
+  copy them into your entry with `uv run python -m kit artifacts <entry> --from /home/main/actions-runner/_work/_temp/out-45839269893`

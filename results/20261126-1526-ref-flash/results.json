@@ -1,0 +1,52 @@
+{
+  "submission": "reference",
+  "model": "google-cloud/gemini-3.8-flash",
+  "score": 0.130297,
+  "complete": true,
+  "unmeasured": [],
+  "judge_model": "claude-opus-5-5",
+  "date": "2026-11-26T15:26:49Z",
+  "submission_dir": "/home/main/actions-runner/_work/_temp/entry",
+  "model_base_url": null,
+  "no_export": true,
+  "tasks_repo": "google/physical-engineerings-last-exam",
+  "tasks_revision": "9ca4de831267dd81750f958c6c6c58df6407104b",
+  "tasks": [
+    {
+      "id": "wind-diaphragm-shear",
+      "score": 0.130159,
+      "reward": 0.130159,
+      "measured": true,
+      "status": "ok",
+      "kind": "ok",
+      "seconds": 1946,
+      "trial": "attempt1/jobs/dev/wind-diaphragm-shear__Kn9VfUK",
+      "tokens": {
+        "input": 9662835,
+        "cache": 8264497,
+        "output": 208996
+      },
+      "graded_by": "",
+      "artifact": "",
+      "claimed": null
+    },
+    {
+      "id": "engineers-estimate-check",
+      "score": 0.130435,
+      "reward": 0.130435,
+      "measured": true,
+      "status": "ok",
+      "kind": "ok",
+      "seconds": 1215,
+      "trial": "attempt1/jobs/dev/engineers-estimate-check__MBRbwzP",
+      "tokens": {
+        "input": 5894760,
+        "cache": 4791861,
+        "output": 164656
+      },
+      "graded_by": "",
+      "artifact": "",
+      "claimed": null
+    }
+  ]
+}
