@@ -61,6 +61,13 @@ jobs:
             chmod +x "$HOME/.docker/cli-plugins/docker-buildx"
           fi
           docker buildx version
+          # Harbor drives every task through Docker Compose v2 (the `docker compose` plugin), which Ubuntu's docker.io lacks.
+          if ! docker compose version >/dev/null 2>&1; then
+            mkdir -p "$HOME/.docker/cli-plugins"
+            curl -fsSL -o "$HOME/.docker/cli-plugins/docker-compose" https://github.com/docker/compose/releases/download/v2.32.4/docker-compose-linux-x86_64
+            chmod +x "$HOME/.docker/cli-plugins/docker-compose"
+          fi
+          docker compose version
           docker info --format 'docker {{.ServerVersion}}, {{.NCPU}} CPUs, {{.MemTotal}} bytes'
       - name: Start the model proxy
         env:
