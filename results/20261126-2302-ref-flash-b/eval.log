@@ -1,0 +1,17 @@
+Using CPython 3.11.18
+Creating virtual environment at: .venv
+Installed 17 packages in 18ms
+rubric and checks-judge tasks are judged by claude-opus-5-5 at http://localhost:4000/v1 (JUDGE_* to change)
+building reference ...
+attempt 1: 3 task(s), 1 at a time; Harbor writes /home/main/actions-runner/_work/_temp/out-45896203937/attempt1/harbor.log (tail -f it to follow)
+
+task                       score  status
+data-hall-mep-routing      0.000  ok (3719 s)
+fire-test-validation-memo  0.572  ok (890 s)
+foundation-strategy        0.322  ok (1791 s)
+
+reference (google-cloud/gemini-3.8-flash): 0.298 over 3 task(s)
+results: /home/main/actions-runner/_work/_temp/out-45896203937/results.json
+
+artifacts: 3 task(s) in /home/main/actions-runner/_work/_temp/out-45896203937/artifacts
+  copy them into your entry with `uv run python -m kit artifacts <entry> --from /home/main/actions-runner/_work/_temp/out-45896203937`

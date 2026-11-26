@@ -1,0 +1,101 @@
+{"t": 1795731269.291, "kind": "start", "allow": [], "exceptions": ["host.docker.internal:4000"], "forward": "serve:8765"}
+{"t": 1795731272.071, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731275.033, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 5425, "bytes_down": 4461}
+{"t": 1795731275.396, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731277.067, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 8622, "bytes_down": 3340}
+{"t": 1795731277.358, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731284.412, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 14883, "bytes_down": 22229}
+{"t": 1795731284.909, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731286.751, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 39761, "bytes_down": 3472}
+{"t": 1795731288.258, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731293.934, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 42026, "bytes_down": 11994}
+{"t": 1795731294.406, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731301.109, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 70303, "bytes_down": 13999}
+{"t": 1795731301.561, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731308.233, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 90107, "bytes_down": 13839}
+{"t": 1795731308.808, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731313.102, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 125046, "bytes_down": 7527}
+{"t": 1795731313.385, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731321.045, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 138788, "bytes_down": 15000}
+{"t": 1795731321.967, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731324.573, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 156280, "bytes_down": 3316}
+{"t": 1795731324.858, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731327.543, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 158688, "bytes_down": 3713}
+{"t": 1795731327.834, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731331.935, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 162431, "bytes_down": 3865}
+{"t": 1795731332.345, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731336.779, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 179239, "bytes_down": 7290}
+{"t": 1795731337.314, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731341.095, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 199372, "bytes_down": 4799}
+{"t": 1795731341.574, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731344.163, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 222280, "bytes_down": 3790}
+{"t": 1795731344.601, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731347.044, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 233513, "bytes_down": 3512}
+{"t": 1795731347.447, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731353.096, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 249762, "bytes_down": 8661}
+{"t": 1795731353.612, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731357.712, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 274500, "bytes_down": 8011}
+{"t": 1795731358.166, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731369.132, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 291632, "bytes_down": 25385}
+{"t": 1795731369.957, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731379.324, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 322744, "bytes_down": 13984}
+{"t": 1795731380.231, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731389.217, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 337711, "bytes_down": 21349}
+{"t": 1795731389.518, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731392.666, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 373953, "bytes_down": 5047}
+{"t": 1795731392.99, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731400.131, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 381296, "bytes_down": 15512}
+{"t": 1795731400.422, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731403.256, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 401773, "bytes_down": 3692}
+{"t": 1795731403.534, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731406.517, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 407386, "bytes_down": 4712}
+{"t": 1795731406.836, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731423.709, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 410578, "bytes_down": 42830}
+{"t": 1795731424.0, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731427.76, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 464960, "bytes_down": 7163}
+{"t": 1795731428.014, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731431.169, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 473021, "bytes_down": 6448}
+{"t": 1795731431.479, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731438.75, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 495247, "bytes_down": 17157}
+{"t": 1795731439.59, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731475.381, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 529855, "bytes_down": 89739}
+{"t": 1795731476.303, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731486.242, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 638769, "bytes_down": 22375}
+{"t": 1795731486.508, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731490.215, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 663708, "bytes_down": 4415}
+{"t": 1795731491.484, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731502.206, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 666977, "bytes_down": 28961}
+{"t": 1795731502.521, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731506.383, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 703486, "bytes_down": 5308}
+{"t": 1795731507.119, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731510.399, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 712315, "bytes_down": 5430}
+{"t": 1795731511.158, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731515.098, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 720089, "bytes_down": 6391}
+{"t": 1795731515.958, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731578.141, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 736782, "bytes_down": 177437}
+{"t": 1795731578.963, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731588.869, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 954671, "bytes_down": 11506}
+{"t": 1795731589.333, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731653.81, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 984437, "bytes_down": 177740}
+{"t": 1795731654.099, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731706.629, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 1201140, "bytes_down": 156966}
+{"t": 1795731707.075, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731736.21, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 1392474, "bytes_down": 72167}
+{"t": 1795731736.63, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731893.575, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 1478135, "bytes_down": 166364}
+{"t": 1795731894.124, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731899.92, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 1661680, "bytes_down": 12578}
+{"t": 1795731900.384, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731908.475, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 1483350, "bytes_down": 6206}
+{"t": 1795731908.949, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731912.673, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 1490457, "bytes_down": 5844}
+{"t": 1795731913.126, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795731919.426, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 1503872, "bytes_down": 11458}
+{"t": 1795731919.868, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795732075.863, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 1525826, "bytes_down": 174261}
+{"t": 1795732076.456, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795732105.869, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 1717164, "bytes_down": 60261}
+{"t": 1795732106.113, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795732110.957, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 1767769, "bytes_down": 5166}
+{"t": 1795732111.374, "kind": "allowed", "method": "POST", "host": "host.docker.internal", "port": 4000, "address": "host.docker.internal", "reason": "the evaluator's model server"}
+{"t": 1795732157.653, "kind": "closed", "host": "host.docker.internal", "port": 4000, "bytes_up": 1771913, "bytes_down": 81146}
