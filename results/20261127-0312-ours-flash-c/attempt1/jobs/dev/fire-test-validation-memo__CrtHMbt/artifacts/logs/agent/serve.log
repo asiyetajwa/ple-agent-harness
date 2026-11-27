@@ -1,0 +1,2 @@
+listening on 8765
+task: workdir /app/files, model gemini-3.8-flash, 0 MCP server(s)

@@ -1,0 +1,70 @@
+{
+  "submission": "ple-agent-harness",
+  "model": "google-cloud/gemini-3.8-flash",
+  "score": 0.292228,
+  "complete": true,
+  "unmeasured": [],
+  "judge_model": "claude-opus-5-5",
+  "date": "2026-11-27T03:12:03Z",
+  "submission_dir": "/home/main/actions-runner/_work/_temp/entry",
+  "model_base_url": null,
+  "no_export": true,
+  "tasks_repo": "google/physical-engineerings-last-exam",
+  "tasks_revision": "9ca4de831267dd81750f958c6c6c58df6407104b",
+  "tasks": [
+    {
+      "id": "data-hall-mep-routing",
+      "score": 0.0,
+      "reward": 0.0,
+      "measured": true,
+      "status": "ok",
+      "kind": "ok",
+      "seconds": 7916,
+      "trial": "attempt1/jobs/dev/data-hall-mep-routing__fogsapv",
+      "tokens": {
+        "input": 61815513,
+        "cache": 55917386,
+        "output": 896652
+      },
+      "graded_by": "",
+      "artifact": "",
+      "claimed": null
+    },
+    {
+      "id": "fire-test-validation-memo",
+      "score": 0.567308,
+      "reward": 0.567308,
+      "measured": true,
+      "status": "ok",
+      "kind": "ok",
+      "seconds": 3293,
+      "trial": "attempt1/jobs/dev/fire-test-validation-memo__CrtHMbt",
+      "tokens": {
+        "input": 26491467,
+        "cache": 24443501,
+        "output": 396645
+      },
+      "graded_by": "",
+      "artifact": "",
+      "claimed": null
+    },
+    {
+      "id": "foundation-strategy",
+      "score": 0.309375,
+      "reward": 0.309375,
+      "measured": true,
+      "status": "ok",
+      "kind": "ok",
+      "seconds": 3383,
+      "trial": "attempt1/jobs/dev/foundation-strategy__2ijscHU",
+      "tokens": {
+        "input": 24740977,
+        "cache": 22263212,
+        "output": 448839
+      },
+      "graded_by": "",
+      "artifact": "",
+      "claimed": null
+    }
+  ]
+}
