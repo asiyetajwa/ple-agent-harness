@@ -118,10 +118,10 @@ def test_governor_stops_when_repair_does_not_help():
 
 
 def test_unreached_items_are_not_signed_off():
-  s, out, calls = run_case([[{"id": "R2", "verdict": "pass", "observed": "Units: kNm, m"}],
-                            [{"id": "R1", "verdict": "pass", "observed": "M_max = 41.2 kNm"}]])
-  assert [c[0] for c in calls][-2:] == ["repair1", "recheck1"]
-  assert "2 of 2" in out
+  # R1 is never reached: it is not signed off, and nothing is rewritten for it
+  s, out, calls = run_case([[{"id": "R2", "verdict": "pass", "observed": "Units: kNm, m"}]])
+  assert [c[0] for c in calls] == ["ledger", "solver", "checker"]
+  assert "1 of 2" in out and "still open: R1" in out
 
 
 def test_phase_time_boxes():
@@ -134,16 +134,14 @@ def test_phase_time_boxes():
 
 
 def test_a_pass_without_evidence_is_not_signed_off():
-  # first check: bare passes; the evidence retry quotes R2 but still not R1, which then goes to repair
+  # first check: bare passes; the evidence retry quotes R2 but still not R1, which stays open without a repair
   s, out, calls = run_case([
       [{"id": "R1", "verdict": "pass"}, {"id": "R2", "verdict": "pass", "observed": "PASS"}],
       [{"id": "R1", "verdict": "pass"}, {"id": "R2", "verdict": "pass", "observed": "Units: kNm, m"}],
-      [{"id": "R1", "verdict": "pass", "observed": "M_max = 41.2 kNm"}],
   ])
-  assert [c[0] for c in calls] == ["ledger", "solver", "checker", "checker-evidence", "repair1", "recheck1"]
-  assert "2 of 2 requirements verified" in out
-  record = json.loads(s.files["/tmp/.harness/record.json"])
-  assert record["record"]["repairs"][0]["items"] == ["R1"]
+  assert [c[0] for c in calls] == ["ledger", "solver", "checker", "checker-evidence"]
+  assert "1 of 2 requirements verified" in out and "still open: R1" in out
+  assert any("nothing shown to be wrong" in l for l in s.logs)
 
 
 def test_echoed_and_unrun_excerpts_do_not_count():
@@ -162,3 +160,12 @@ def test_echoed_and_unrun_excerpts_do_not_count():
   assert rows["R2"]["verdict"] == "unverified"
   assert rows["R3"]["verdict"] == "unverified" and "number" in rows["R3"]["evidence"]
   assert rows["R4"]["verdict"] == "pass"
+
+
+def test_a_quoted_line_found_by_search_counts():
+  # grep typed part of the line; the full output line it found is a real excerpt
+  rows = {"R1": {"id": "R1", "verdict": "pass", "observed": "S 131 min, D 118 min, E +13 min"}}
+  capture = [("grep -n 'S 131 min' memo.txt", "12: S 131 min, D 118 min, E +13 min"),
+             ("python3 -c \"print('S 131 min, D 118 min, E +13 min')\"", "S 131 min, D 118 min, E +13 min")]
+  serve.bind_evidence(rows, [{"id": "R1", "check": "review"}], capture)
+  assert rows["R1"]["verdict"] == "pass"

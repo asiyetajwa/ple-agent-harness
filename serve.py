@@ -181,8 +181,9 @@ def bind_evidence(rows: dict[str, dict[str, Any]], items: list[dict[str, Any]],
   Evidence counts only from outputs of commands (and file reads) that do not mention the sign-off file, and an
   excerpt that also appears in any command the checker typed is an echo of its own text, not a measurement.
   """
-  outputs = squash("\n".join(out for cmd, out in capture if "signoff" not in cmd))
-  typed = squash("\n".join(cmd for cmd, _ in capture if not cmd.startswith("read_file ")))
+  # (typed command, output) pairs; a file read has nothing typed. The sign-off write is never evidence.
+  pairs = [("" if cmd.startswith("read_file ") else squash(cmd), squash(out))
+           for cmd, out in capture if "signoff" not in cmd]
   kind = {r["id"]: r.get("check") for r in items}
   for rid, row in rows.items():
     if row.get("verdict") != "pass":
@@ -193,9 +194,10 @@ def bind_evidence(rows: dict[str, dict[str, Any]], items: list[dict[str, Any]],
       why = "no excerpt quoted"
     elif not VERDICT_WORDS.sub("", seen).strip(" :.-=|"):
       why = "the excerpt is only a verdict word"
-    elif seen not in outputs:
+    elif not any(seen in out for _, out in pairs):
       why = "the excerpt is not in the output of any command run or file read"
-    elif seen in typed:
+    elif not any(seen in out and seen not in cmd for cmd, out in pairs):
+      # every output that shows it came from a command that already held the text (print, echo, a heredoc'd script)
       why = "the excerpt appears in a command the checker typed, so it is an echo, not a measurement"
     elif kind.get(rid) == "exec" and not re.search(r"\d", seen):
       why = "an exec requirement needs the checked number in the excerpt"
@@ -386,12 +388,18 @@ class Run:
                       hard_failed=sum(by_id[v["id"]].get("type") == "hard" for v in failing),
                       failing=[{"id": v["id"], "evidence": str(v.get("evidence", ""))[:300]} for v in failing][:30],
                       tokens=self.tokens())
-      if not failing:
+      # Repair only what the checker showed to be wrong. An item it could not evidence (unverified) or never
+      # reached (unchecked) stays open in the sign-off, but rewriting a deliverable nobody faulted helps nothing.
+      to_fix = [v for v in failing if v.get("verdict") == "fail"]
+      if not to_fix:
+        if failing:
+          await self.note("governor", stop="nothing shown to be wrong; the rest stay open",
+                          open_items=[v["id"] for v in failing])
         break
       stop = None
       if rounds >= MAX_REPAIRS:
         stop = "repair limit"
-      elif previous is not None and len(failing) >= previous:
+      elif previous is not None and len(to_fix) >= previous:
         stop = "the last repair did not reduce the failures"
       elif self.left() < self.total * (CHECK_SHARE + 0.06):
         stop = "not enough time for another repair and check"
@@ -401,9 +409,9 @@ class Run:
         await self.note("governor", stop=stop, open_items=[v["id"] for v in failing])
         break
       rounds += 1
-      previous = len(failing)
-      await self.repair(ledger, [{**by_id[v["id"]], **v} for v in failing], rounds)
-      verdicts.update(await self.check(ledger, [by_id[v["id"]] for v in failing], f"recheck{rounds}"))
+      previous = len(to_fix)
+      await self.repair(ledger, [{**by_id[v["id"]], **v} for v in to_fix], rounds)
+      verdicts.update(await self.check(ledger, [by_id[v["id"]] for v in to_fix], f"recheck{rounds}"))
     return await self.closing(ledger, verdicts, summary)
 
   def left(self) -> float:
